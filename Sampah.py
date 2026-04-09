@@ -64,7 +64,7 @@ col_left, col_right = st.columns([2, 1])
 
 # Di dalam col_left (bagian peta):
 with col_left:
-    st.header("🗺️ **Peta Bank Sampah Surabaya**")
+    st.header("🗺️ **Peta Bank Sampah Kota Surabaya**")
     
     # Map Surabaya + Fullscreen
     m = folium.Map(
