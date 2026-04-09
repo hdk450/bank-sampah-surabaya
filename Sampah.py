@@ -4,6 +4,7 @@ import numpy as np
 import plotly.express as px
 import folium
 from streamlit_folium import folium_static
+from folium.plugins import Fullscreen, MeasureControl
 
 st.set_page_config(layout="wide", page_title="Dashboard Bank Sampah Surabaya")
 
@@ -61,21 +62,37 @@ st.markdown("---")
 # DASHBOARD LAYOUT
 col_left, col_right = st.columns([2, 1])
 
+# Di dalam col_left (bagian peta):
 with col_left:
-    st.header("🗺️ **Peta Bank Sampah KOTA SURABAYA**")
+    st.header("🗺️ **Peta Bank Sampah Surabaya**")
     
-    # ✅ KOORDINAT SURABAYA
-    m = folium.Map(location=[-7.28, 112.75], zoom_start=11)
+    # Map Surabaya + Fullscreen
+    m = folium.Map(
+        location=[-7.28, 112.75], 
+        zoom_start=11,
+        tiles="OpenStreetMap"
+    )
     
+    # FULLSCREEN BUTTON ✅
+    from folium.plugins import Fullscreen
+    Fullscreen(position="topright").add_to(m)
+    
+    # MARKERS Bank Sampah
     for idx, row in df_filtered.iterrows():
         folium.Marker(
             [row['lat'], row['lon']],
-            popup=f"<b>{row['nama']}</b><br>{row['alamat']}<br>{row['volume_harian']:,} kg/hari",
+            popup=f"""
+            <b>{row['nama']}</b><br>
+            <b>{row['alamat']}</b><br>
+            📊 {row['volume_harian']:,} kg/hari<br>
+            {row['kelurahan']}, {row['kecamatan']}
+            """,
             tooltip=row['nama'],
             icon=folium.Icon(color="green", icon="recycle")
         ).add_to(m)
     
-    folium_static(m, width=800, height=500)
+    # ✅ FIXED - NO returned_objects
+    folium_static(m, width="100%", height=600)
 
 with col_right:
     st.header("📊 **Statistik**")
